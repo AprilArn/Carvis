@@ -1,0 +1,32 @@
+beware of pedestrians
+bridge ahead
+bus stop area
+c intersection
+circular ahead
+circular area
+curvy road ahead
+downhill road
+enter left
+enter right
+gas station
+green light
+l intersection
+l soft turn
+l turn
+no entry
+no l turn
+no overtaking
+no parking
+no r turn
+no stop
+no u turn
+r intersection
+r soft turn
+r turn
+red light
+stop
+t intersection
+traffic light ahead
+u turn area
+uphill road
+warning affirmation
