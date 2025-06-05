@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.os.Message
 import android.util.Log
 import android.view.View
+import android.widget.Button
 import android.widget.Toast
 import android.widget.ToggleButton
 import androidx.activity.result.contract.ActivityResultContracts
@@ -37,6 +38,7 @@ class MainActivity : AppCompatActivity(), YoloV8Detector.DetectorListener {
     private var camera: Camera? = null
     private var cameraProvider: ProcessCameraProvider? = null
     private var detector: YoloV8Detector? = null
+    private var activeDelegate: DelegateType? = null
 
     private lateinit var predictedAdapter: PredictedAdapter
     private lateinit var cameraExecutor: ExecutorService
@@ -63,6 +65,32 @@ class MainActivity : AppCompatActivity(), YoloV8Detector.DetectorListener {
             }
 
             // Checking best resource
+//            runOnUiThread {
+//                val isGpuSupported = detector?.isGpuSupported() ?: false
+//                val isNnapiSupported = detector?.isNnapiSupported() ?: false
+//
+//                binding.gpuButton.isEnabled = isGpuSupported
+//                binding.nnapiButton.isEnabled = isNnapiSupported
+//                binding.cpuButton.isEnabled = true
+//
+//                when (detector?.currentDelegate) {
+//                    DelegateType.GPU -> {
+//                        binding.gpuButton.isChecked = true
+//                        updateToggleColors(binding.gpuButton)
+//                    }
+//                    DelegateType.NNAPI -> {
+//                        binding.nnapiButton.isChecked = true
+//                        updateToggleColors(binding.nnapiButton)
+//                    }
+//                    DelegateType.CPU -> {
+//                        binding.cpuButton.isChecked = true
+//                        updateToggleColors(binding.cpuButton)
+//                    }
+//                    else -> {}
+//                }
+//            }
+
+            // Checking best resource
             runOnUiThread {
                 val isGpuSupported = detector?.isGpuSupported() ?: false
                 val isNnapiSupported = detector?.isNnapiSupported() ?: false
@@ -71,22 +99,15 @@ class MainActivity : AppCompatActivity(), YoloV8Detector.DetectorListener {
                 binding.nnapiButton.isEnabled = isNnapiSupported
                 binding.cpuButton.isEnabled = true
 
+                // Set warna tombol sesuai delegate aktif
                 when (detector?.currentDelegate) {
-                    DelegateType.GPU -> {
-                        binding.gpuButton.isChecked = true
-                        updateToggleColors(binding.gpuButton)
-                    }
-                    DelegateType.NNAPI -> {
-                        binding.nnapiButton.isChecked = true
-                        updateToggleColors(binding.nnapiButton)
-                    }
-                    DelegateType.CPU -> {
-                        binding.cpuButton.isChecked = true
-                        updateToggleColors(binding.cpuButton)
-                    }
-                    else -> {}
+                    DelegateType.GPU -> updateButtonColors(binding.gpuButton)
+                    DelegateType.NNAPI -> updateButtonColors(binding.nnapiButton)
+                    DelegateType.CPU -> updateButtonColors(binding.cpuButton)
+                    else -> updateButtonColors(null) // Tidak ada yang aktif
                 }
             }
+
         }
 
         if (allPermissionsGranted()) {
@@ -113,43 +134,79 @@ class MainActivity : AppCompatActivity(), YoloV8Detector.DetectorListener {
 //        }
 //    }
 
+//    private fun bindListeners() {
+//        val toggleDelegate = { delegate: DelegateType ->
+//            cameraExecutor.submit {
+//                detector?.restart(delegate)
+//            }
+//            binding.gpuButton.isChecked = delegate == DelegateType.GPU
+//            binding.nnapiButton.isChecked = delegate == DelegateType.NNAPI
+//            binding.cpuButton.isChecked = delegate == DelegateType.CPU
+//        }
+//
+//        binding.gpuButton.setOnClickListener {
+//            toggleDelegate(DelegateType.GPU)
+//            updateToggleColors(binding.gpuButton)
+//        }
+//
+//        binding.nnapiButton.setOnClickListener {
+//            toggleDelegate(DelegateType.NNAPI)
+//            updateToggleColors(binding.nnapiButton)
+//        }
+//
+//        binding.cpuButton.setOnClickListener {
+//            toggleDelegate(DelegateType.CPU)
+//            updateToggleColors(binding.cpuButton)
+//        }
+//    }
+//
+//    private fun updateToggleColors(selected: ToggleButton) {
+//        val buttons = listOf(binding.gpuButton, binding.nnapiButton, binding.cpuButton)
+//        buttons.forEach {
+//            it.setBackgroundColor(
+//                ContextCompat.getColor(
+//                    this,
+//                    if (it == selected) R.color.orange else R.color.gray
+//                )
+//            )
+//        }
+//    }
+
     private fun bindListeners() {
-        val toggleDelegate = { delegate: DelegateType ->
+        val toggleDelegate = { delegate: DelegateType, button: Button ->
             cameraExecutor.submit {
                 detector?.restart(delegate)
             }
-            binding.gpuButton.isChecked = delegate == DelegateType.GPU
-            binding.nnapiButton.isChecked = delegate == DelegateType.NNAPI
-            binding.cpuButton.isChecked = delegate == DelegateType.CPU
+            activeDelegate = delegate
+            updateButtonColors(button)
         }
 
         binding.gpuButton.setOnClickListener {
-            toggleDelegate(DelegateType.GPU)
-            updateToggleColors(binding.gpuButton)
+            toggleDelegate(DelegateType.GPU, binding.gpuButton)
         }
 
         binding.nnapiButton.setOnClickListener {
-            toggleDelegate(DelegateType.NNAPI)
-            updateToggleColors(binding.nnapiButton)
+            toggleDelegate(DelegateType.NNAPI, binding.nnapiButton)
         }
 
         binding.cpuButton.setOnClickListener {
-            toggleDelegate(DelegateType.CPU)
-            updateToggleColors(binding.cpuButton)
+            toggleDelegate(DelegateType.CPU, binding.cpuButton)
         }
     }
 
-    private fun updateToggleColors(selected: ToggleButton) {
+    private fun updateButtonColors(selected: Button?) {
         val buttons = listOf(binding.gpuButton, binding.nnapiButton, binding.cpuButton)
         buttons.forEach {
-            it.setBackgroundColor(
-                ContextCompat.getColor(
+            it.setBackgroundTintList(
+                ContextCompat.getColorStateList(
                     this,
                     if (it == selected) R.color.orange else R.color.gray
                 )
             )
         }
     }
+
+
 
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)

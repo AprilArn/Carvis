@@ -131,6 +131,70 @@
 <!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
 
     <!-- Footer for Button -->
+<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--        android:id="@+id/footer"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:layout_constraintStart_toStartOf="@+id/resultBox"-->
+<!--        app:layout_constraintEnd_toEndOf="@+id/resultBox"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        android:background="#1E1E1E"-->
+<!--        android:paddingVertical="4dp"-->
+<!--        android:layout_marginBottom="10dp">-->
+
+<!--        <LinearLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="horizontal"-->
+<!--            android:gravity="center"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent">-->
+
+<!--            &lt;!&ndash; Button GPU Handler &ndash;&gt;-->
+<!--            <ToggleButton-->
+<!--                android:id="@+id/gpuButton"-->
+<!--                android:layout_width="70dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:textColor="@color/white"-->
+<!--                android:textOff="@string/gpu"-->
+<!--                android:textOn="@string/gpu"-->
+<!--                android:layout_marginHorizontal="4dp"-->
+<!--                android:layout_marginVertical="8dp"-->
+<!--                android:enabled="false"-->
+<!--                android:layout_gravity="center"/>-->
+
+<!--            &lt;!&ndash; Button NNAPI Handler &ndash;&gt;-->
+<!--            <ToggleButton-->
+<!--                android:id="@+id/nnapiButton"-->
+<!--                android:layout_width="70dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:textColor="@color/white"-->
+<!--                android:textOff="@string/nnapi"-->
+<!--                android:textOn="@string/nnapi"-->
+<!--                android:layout_marginHorizontal="4dp"-->
+<!--                android:layout_marginVertical="8dp"-->
+<!--                android:enabled="false"-->
+<!--                android:layout_gravity="center"/>-->
+
+<!--            &lt;!&ndash; Button CPU Handler &ndash;&gt;-->
+<!--            <ToggleButton-->
+<!--                android:id="@+id/cpuButton"-->
+<!--                android:layout_width="70dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:textColor="@color/white"-->
+<!--                android:textOff="@string/cpu"-->
+<!--                android:textOn="@string/cpu"-->
+<!--                android:layout_marginHorizontal="4dp"-->
+<!--                android:layout_marginVertical="8dp"-->
+<!--                android:enabled="false"-->
+<!--                android:layout_gravity="center"/>-->
+
+<!--        </LinearLayout>-->
+<!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+    <!-- Footer for Button -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/footer"
         android:layout_width="0dp"
@@ -139,59 +203,126 @@
         app:layout_constraintEnd_toEndOf="@+id/resultBox"
         app:layout_constraintBottom_toBottomOf="parent"
         android:background="#1E1E1E"
-        android:paddingVertical="4dp"
         android:layout_marginBottom="10dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center"
+            android:gravity="center_horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            android:paddingHorizontal="4dp">
 
-            <!-- Button GPU Handler -->
-            <ToggleButton
+            <!-- GPU Button -->
+            <Button
                 android:id="@+id/gpuButton"
-                android:layout_width="70dp"
-                android:layout_height="match_parent"
+                android:layout_width="0dp"
+                android:layout_height="44dp"
+                android:layout_weight="1"
+                android:text="@string/gpu"
                 android:textColor="@color/white"
-                android:textOff="@string/gpu"
-                android:textOn="@string/gpu"
                 android:layout_marginHorizontal="4dp"
                 android:layout_marginVertical="8dp"
                 android:enabled="false"
-                android:layout_gravity="center"/>
+                android:backgroundTint="@color/gray"
+                app:cornerRadius="8dp"/>
 
-            <!-- Button NNAPI Handler -->
-            <ToggleButton
+            <!-- NNAPI Button -->
+            <Button
                 android:id="@+id/nnapiButton"
-                android:layout_width="70dp"
-                android:layout_height="match_parent"
+                android:layout_width="0dp"
+                android:layout_height="44dp"
+                android:layout_weight="1"
+                android:text="@string/nnapi"
                 android:textColor="@color/white"
-                android:textOff="@string/nnapi"
-                android:textOn="@string/nnapi"
                 android:layout_marginHorizontal="4dp"
                 android:layout_marginVertical="8dp"
                 android:enabled="false"
-                android:layout_gravity="center"/>
+                android:backgroundTint="@color/gray"
+                app:cornerRadius="8dp"/>
 
-            <!-- Button CPU Handler -->
-            <ToggleButton
+            <!-- CPU Button -->
+            <Button
                 android:id="@+id/cpuButton"
-                android:layout_width="70dp"
-                android:layout_height="match_parent"
+                android:layout_width="0dp"
+                android:layout_height="44dp"
+                android:layout_weight="1"
+                android:text="@string/cpu"
                 android:textColor="@color/white"
-                android:textOff="@string/cpu"
-                android:textOn="@string/cpu"
                 android:layout_marginHorizontal="4dp"
                 android:layout_marginVertical="8dp"
                 android:enabled="false"
-                android:layout_gravity="center"/>
-
+                android:backgroundTint="@color/gray"
+                app:cornerRadius="8dp"/>
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--        android:id="@+id/footer"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:layout_constraintStart_toStartOf="@+id/resultBox"-->
+<!--        app:layout_constraintEnd_toEndOf="@+id/resultBox"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        android:background="#1E1E1E"-->
+<!--        android:paddingVertical="4dp"-->
+<!--        android:layout_marginBottom="10dp"-->
+<!--        android:paddingHorizontal="12dp">-->
+
+<!--        &lt;!&ndash; GPU Button &ndash;&gt;-->
+<!--        <Button-->
+<!--            android:id="@+id/gpuButton"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="44dp"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:layout_constraintEnd_toStartOf="@id/nnapiButton"-->
+<!--            android:text="@string/gpu"-->
+<!--            android:textColor="@color/white"-->
+<!--            android:layout_marginHorizontal="4dp"-->
+<!--            android:layout_marginVertical="8dp"-->
+<!--            android:enabled="false"-->
+<!--            android:backgroundTint="@color/gray"-->
+<!--            app:cornerRadius="8dp"/>-->
+
+<!--        &lt;!&ndash; NNAPI Button &ndash;&gt;-->
+<!--        <Button-->
+<!--            android:id="@+id/nnapiButton"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="44dp"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:layout_constraintStart_toEndOf="@id/gpuButton"-->
+<!--            app:layout_constraintEnd_toStartOf="@id/cpuButton"-->
+<!--            android:text="@string/nnapi"-->
+<!--            android:textColor="@color/white"-->
+<!--            android:layout_marginHorizontal="4dp"-->
+<!--            android:layout_marginVertical="8dp"-->
+<!--            android:enabled="false"-->
+<!--            android:backgroundTint="@color/gray"-->
+<!--            app:cornerRadius="8dp"/>-->
+
+<!--        &lt;!&ndash; CPU Button &ndash;&gt;-->
+<!--        <Button-->
+<!--            android:id="@+id/cpuButton"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="44dp"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toEndOf="@id/nnapiButton"-->
+<!--            android:text="@string/cpu"-->
+<!--            android:textColor="@color/white"-->
+<!--            android:layout_marginHorizontal="4dp"-->
+<!--            android:layout_marginVertical="8dp"-->
+<!--            android:enabled="false"-->
+<!--            android:backgroundTint="@color/gray"-->
+<!--            app:cornerRadius="8dp"/>-->
+<!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
