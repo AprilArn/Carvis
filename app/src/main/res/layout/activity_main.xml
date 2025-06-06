@@ -62,13 +62,13 @@
     <androidx.cardview.widget.CardView
 
         android:id="@+id/resultBox"
+        app:cardBackgroundColor="@color/outline_box"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/footer"
+        app:layout_constraintBottom_toTopOf="@+id/footerCard"
         app:layout_constraintStart_toEndOf="@+id/view_finder"
         app:layout_constraintEnd_toEndOf="parent"
-        app:cardBackgroundColor="#353560"
         android:layout_marginHorizontal="10dp"
         android:layout_marginVertical="10dp"
         app:cardCornerRadius="10dp"
@@ -79,14 +79,15 @@
 
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Predicted confidence ≥ 70%"
+            android:text="Predicted Class (conf ≥ 75%)"
             android:fontFamily="@font/cascadia_mono_regular"
             android:textStyle="bold"
             android:textColor="@color/white"
             android:textSize="12sp"
             android:layout_marginStart="12dp"
             android:layout_marginTop="2dp"
-            android:layout_gravity="">
+
+            >
 
         </TextView>
 
@@ -113,7 +114,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:background="#14141f"
+                android:background="@color/dark_blue"
 
                 >
 
@@ -134,86 +135,212 @@
     </androidx.cardview.widget.CardView>
 
     <!-- Footer for Button -->
-    <androidx.constraintlayout.widget.ConstraintLayout
+<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
 
-        android:id="@+id/footer"
+<!--        android:id="@+id/footer"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:layout_constraintStart_toStartOf="@+id/resultBox"-->
+<!--        app:layout_constraintEnd_toEndOf="@+id/resultBox"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        android:background="#1E1E1E"-->
+<!--        android:layout_marginBottom="10dp"-->
+
+<!--        >-->
+
+<!--        <LinearLayout-->
+
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="horizontal"-->
+<!--            android:gravity="center_horizontal"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            android:paddingHorizontal="4dp"-->
+
+<!--            >-->
+
+<!--            &lt;!&ndash; GPU Button &ndash;&gt;-->
+<!--            <Button-->
+
+<!--                android:id="@+id/gpuButton"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="44dp"-->
+<!--                android:layout_weight="1"-->
+<!--                android:text="@string/gpu"-->
+<!--                android:textColor="@color/white"-->
+<!--                android:layout_marginHorizontal="4dp"-->
+<!--                android:layout_marginVertical="8dp"-->
+<!--                android:enabled="false"-->
+<!--                android:backgroundTint="@color/gray"-->
+<!--                app:cornerRadius="8dp"-->
+
+<!--                />-->
+
+<!--            &lt;!&ndash; NNAPI Button &ndash;&gt;-->
+<!--            <Button-->
+
+<!--                android:id="@+id/nnapiButton"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="44dp"-->
+<!--                android:layout_weight="1"-->
+<!--                android:text="@string/nnapi"-->
+<!--                android:textColor="@color/white"-->
+<!--                android:layout_marginHorizontal="4dp"-->
+<!--                android:layout_marginVertical="8dp"-->
+<!--                android:enabled="false"-->
+<!--                android:backgroundTint="@color/gray"-->
+<!--                app:cornerRadius="8dp"-->
+
+<!--                />-->
+
+<!--            &lt;!&ndash; CPU Button &ndash;&gt;-->
+<!--            <Button-->
+
+<!--                android:id="@+id/cpuButton"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="44dp"-->
+<!--                android:layout_weight="1"-->
+<!--                android:text="@string/cpu"-->
+<!--                android:textColor="@color/white"-->
+<!--                android:layout_marginHorizontal="4dp"-->
+<!--                android:layout_marginVertical="8dp"-->
+<!--                android:enabled="false"-->
+<!--                android:backgroundTint="@color/gray"-->
+<!--                app:cornerRadius="8dp"-->
+
+<!--                />-->
+
+<!--        </LinearLayout>-->
+
+<!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+    <androidx.cardview.widget.CardView
+
+        android:id="@+id/footerCard"
+        app:cardBackgroundColor="@color/outline_box"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="@+id/resultBox"
         app:layout_constraintEnd_toEndOf="@+id/resultBox"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:background="#1E1E1E"
         android:layout_marginBottom="10dp"
+        app:cardCornerRadius="10dp"
 
         >
 
-        <LinearLayout
+        <TextView
 
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_horizontal"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:paddingHorizontal="4dp"
+            android:text="Processing Units"
+            android:fontFamily="@font/cascadia_mono_regular"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="2dp"
 
             >
 
-            <!-- GPU Button -->
-            <Button
+        </TextView>
 
-                android:id="@+id/gpuButton"
-                android:layout_width="0dp"
-                android:layout_height="44dp"
-                android:layout_weight="1"
-                android:text="@string/gpu"
-                android:textColor="@color/white"
-                android:layout_marginHorizontal="4dp"
-                android:layout_marginVertical="8dp"
-                android:enabled="false"
-                android:backgroundTint="@color/gray"
-                app:cornerRadius="8dp"
+        <androidx.cardview.widget.CardView
 
-                />
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:cardCornerRadius="10dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginHorizontal="2dp"
+            android:layout_marginBottom="2dp"
 
-            <!-- NNAPI Button -->
-            <Button
+            >
 
-                android:id="@+id/nnapiButton"
-                android:layout_width="0dp"
-                android:layout_height="44dp"
-                android:layout_weight="1"
-                android:text="@string/nnapi"
-                android:textColor="@color/white"
-                android:layout_marginHorizontal="4dp"
-                android:layout_marginVertical="8dp"
-                android:enabled="false"
-                android:backgroundTint="@color/gray"
-                app:cornerRadius="8dp"
+            <androidx.constraintlayout.widget.ConstraintLayout
 
-                />
+                android:id="@+id/footer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/dark_blue"
 
-            <!-- CPU Button -->
-            <Button
+                >
 
-                android:id="@+id/cpuButton"
-                android:layout_width="0dp"
-                android:layout_height="44dp"
-                android:layout_weight="1"
-                android:text="@string/cpu"
-                android:textColor="@color/white"
-                android:layout_marginHorizontal="4dp"
-                android:layout_marginVertical="8dp"
-                android:enabled="false"
-                android:backgroundTint="@color/gray"
-                app:cornerRadius="8dp"
+                <LinearLayout
 
-                />
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_horizontal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:paddingHorizontal="4dp"
 
-        </LinearLayout>
+                    >
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                    <!-- GPU Button -->
+                    <Button
+
+                        android:id="@+id/gpuButton"
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:layout_weight="1"
+                        android:text="@string/gpu"
+                        android:textColor="@color/white"
+                        android:fontFamily="@font/cascadia_mono_regular"
+                        android:layout_marginHorizontal="4dp"
+                        android:layout_marginVertical="4dp"
+                        android:enabled="false"
+                        android:backgroundTint="@color/gray"
+                        app:cornerRadius="10dp"
+
+                        />
+
+                    <!-- NNAPI Button -->
+                    <Button
+
+                        android:id="@+id/nnapiButton"
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:layout_weight="1"
+                        android:text="@string/nnapi"
+                        android:textColor="@color/white"
+                        android:fontFamily="@font/cascadia_mono_regular"
+                        android:layout_marginHorizontal="4dp"
+                        android:layout_marginVertical="4dp"
+                        android:enabled="false"
+                        android:backgroundTint="@color/gray"
+                        app:cornerRadius="10dp"
+
+                        />
+
+                    <!-- CPU Button -->
+                    <Button
+
+                        android:id="@+id/cpuButton"
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:layout_weight="1"
+                        android:text="@string/cpu"
+                        android:textColor="@color/white"
+                        android:fontFamily="@font/cascadia_mono_regular"
+                        android:layout_marginHorizontal="4dp"
+                        android:layout_marginVertical="4dp"
+                        android:enabled="false"
+                        android:backgroundTint="@color/gray"
+                        app:cornerRadius="10dp"
+
+                        />
+
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.cardview.widget.CardView>
+
+    </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
