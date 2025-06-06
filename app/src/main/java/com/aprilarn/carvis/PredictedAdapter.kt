@@ -10,7 +10,7 @@ class PredictedAdapter(var items: List<String>) :
     RecyclerView.Adapter<PredictedAdapter.PredictedViewHolder>() {
 
     inner class PredictedViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val text: TextView = itemView.findViewById(R.id.predicted_text)
+        val text: TextView = itemView.findViewById(R.id.predicted_text) // change to binding
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PredictedViewHolder {
