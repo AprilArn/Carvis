@@ -4,5 +4,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="bounding_box_color">#FF007C</color>
     <color name="gray">#999</color>
-    <color name="orange">#F93</color>
+    <color name="blue">#3b3b99</color>
+    <color name="dark_blue">#14141f</color>
+    <color name="outline_box">#353560</color>
 </resources>
