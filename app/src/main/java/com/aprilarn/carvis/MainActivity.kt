@@ -65,32 +65,6 @@ class MainActivity : AppCompatActivity(), YoloV8Detector.DetectorListener {
             }
 
             // Checking best resource
-//            runOnUiThread {
-//                val isGpuSupported = detector?.isGpuSupported() ?: false
-//                val isNnapiSupported = detector?.isNnapiSupported() ?: false
-//
-//                binding.gpuButton.isEnabled = isGpuSupported
-//                binding.nnapiButton.isEnabled = isNnapiSupported
-//                binding.cpuButton.isEnabled = true
-//
-//                when (detector?.currentDelegate) {
-//                    DelegateType.GPU -> {
-//                        binding.gpuButton.isChecked = true
-//                        updateToggleColors(binding.gpuButton)
-//                    }
-//                    DelegateType.NNAPI -> {
-//                        binding.nnapiButton.isChecked = true
-//                        updateToggleColors(binding.nnapiButton)
-//                    }
-//                    DelegateType.CPU -> {
-//                        binding.cpuButton.isChecked = true
-//                        updateToggleColors(binding.cpuButton)
-//                    }
-//                    else -> {}
-//                }
-//            }
-
-            // Checking best resource
             runOnUiThread {
                 val isGpuSupported = detector?.isGpuSupported() ?: false
                 val isNnapiSupported = detector?.isNnapiSupported() ?: false
@@ -118,59 +92,6 @@ class MainActivity : AppCompatActivity(), YoloV8Detector.DetectorListener {
 
         bindListeners()
     }
-
-//    private fun bindListeners() {
-//        binding.apply {
-//            isGpu.setOnCheckedChangeListener { buttonView, isChecked ->
-//                cameraExecutor.submit {
-//                    detector?.restart(isGpu = isChecked)
-//                }
-//                if (isChecked) {
-//                    buttonView.setBackgroundColor(ContextCompat.getColor(baseContext, R.color.orange))
-//                } else {
-//                    buttonView.setBackgroundColor(ContextCompat.getColor(baseContext, R.color.gray))
-//                }
-//            }
-//        }
-//    }
-
-//    private fun bindListeners() {
-//        val toggleDelegate = { delegate: DelegateType ->
-//            cameraExecutor.submit {
-//                detector?.restart(delegate)
-//            }
-//            binding.gpuButton.isChecked = delegate == DelegateType.GPU
-//            binding.nnapiButton.isChecked = delegate == DelegateType.NNAPI
-//            binding.cpuButton.isChecked = delegate == DelegateType.CPU
-//        }
-//
-//        binding.gpuButton.setOnClickListener {
-//            toggleDelegate(DelegateType.GPU)
-//            updateToggleColors(binding.gpuButton)
-//        }
-//
-//        binding.nnapiButton.setOnClickListener {
-//            toggleDelegate(DelegateType.NNAPI)
-//            updateToggleColors(binding.nnapiButton)
-//        }
-//
-//        binding.cpuButton.setOnClickListener {
-//            toggleDelegate(DelegateType.CPU)
-//            updateToggleColors(binding.cpuButton)
-//        }
-//    }
-//
-//    private fun updateToggleColors(selected: ToggleButton) {
-//        val buttons = listOf(binding.gpuButton, binding.nnapiButton, binding.cpuButton)
-//        buttons.forEach {
-//            it.setBackgroundColor(
-//                ContextCompat.getColor(
-//                    this,
-//                    if (it == selected) R.color.orange else R.color.gray
-//                )
-//            )
-//        }
-//    }
 
     private fun bindListeners() {
         val toggleDelegate = { delegate: DelegateType, button: Button ->
@@ -200,13 +121,11 @@ class MainActivity : AppCompatActivity(), YoloV8Detector.DetectorListener {
             it.setBackgroundTintList(
                 ContextCompat.getColorStateList(
                     this,
-                    if (it == selected) R.color.orange else R.color.gray
+                    if (it == selected) R.color.blue else R.color.gray
                 )
             )
         }
     }
-
-
 
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
@@ -333,16 +252,6 @@ class MainActivity : AppCompatActivity(), YoloV8Detector.DetectorListener {
             binding.predictionList.adapter = PredictedAdapter(emptyList())
         }
     }
-
-//    override fun onDetect(boundingBoxes: List<BoundingBox>, inferenceTime: Long) {
-//        runOnUiThread {
-//            binding.inferenceTime.text = "${inferenceTime}ms"
-//            binding.overlay.apply {
-//                setResults(boundingBoxes)
-//                invalidate()
-//            }
-//        }
-//    }
 
     override fun onDetect(boundingBoxes: List<BoundingBox>, inferenceTime: Long) {
         runOnUiThread {
