@@ -11,7 +11,6 @@ import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.Toast
-import android.widget.ToggleButton
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.AspectRatio
@@ -22,7 +21,6 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.view.WindowCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.aprilarn.carvis.Model.LABEL_PATH
 import com.aprilarn.carvis.Model.MODEL_PATH
@@ -47,8 +45,6 @@ class MainActivity : AppCompatActivity(), YoloV8Detector.DetectorListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
-        // System UI behaviour
-        //WindowCompat.setDecorFitsSystemWindows(window, false)
         setContentView(binding.root)
 
         // FullScreen
@@ -72,10 +68,6 @@ class MainActivity : AppCompatActivity(), YoloV8Detector.DetectorListener {
                 val isGpuSupported = detector?.isGpuSupported() ?: false
                 val isNnapiSupported = detector?.isNnapiSupported() ?: false
 
-                //binding.gpuButton.isEnabled = isGpuSupported
-                //binding.nnapiButton.isEnabled = isNnapiSupported
-                //binding.cpuButton.isEnabled = true
-
                 // GPU
                 binding.gpuButton.isEnabled = isGpuSupported
                 binding.gpuButton.setBackgroundTintList(
@@ -96,7 +88,6 @@ class MainActivity : AppCompatActivity(), YoloV8Detector.DetectorListener {
                     ContextCompat.getColorStateList(this, R.color.faded_blue)
                 )
 
-
                 // Set warna tombol sesuai delegate aktif
                 when (detector?.currentDelegate) {
                     DelegateType.GPU -> updateButtonColors(binding.gpuButton)
@@ -105,7 +96,6 @@ class MainActivity : AppCompatActivity(), YoloV8Detector.DetectorListener {
                     else -> updateButtonColors(null) // Tidak ada yang aktif
                 }
             }
-
         }
 
         if (allPermissionsGranted()) {
@@ -138,18 +128,6 @@ class MainActivity : AppCompatActivity(), YoloV8Detector.DetectorListener {
             toggleDelegate(DelegateType.CPU, binding.cpuButton)
         }
     }
-
-//    private fun updateButtonColors(selected: Button?) {
-//        val buttons = listOf(binding.gpuButton, binding.nnapiButton, binding.cpuButton)
-//        buttons.forEach {
-//            it.setBackgroundTintList(
-//                ContextCompat.getColorStateList(
-//                    this,
-//                    if (it == selected) R.color.blue else R.color.faded_blue
-//                )
-//            )
-//        }
-//    }
 
     private fun updateButtonColors(selected: Button?) {
         val buttons = listOf(binding.gpuButton, binding.nnapiButton, binding.cpuButton)
