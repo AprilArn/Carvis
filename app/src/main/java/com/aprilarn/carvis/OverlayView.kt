@@ -33,7 +33,7 @@ class OverlayView(context: Context?, attrs: AttributeSet?) : View(context, attrs
     }
 
     private fun initPaints() {
-        textBackgroundPaint.color = ContextCompat.getColor(context!!, R.color.bounding_box_color)
+        textBackgroundPaint.color = ContextCompat.getColor(context!!, R.color.pink)
         textBackgroundPaint.style = Paint.Style.FILL
         textBackgroundPaint.textSize = 50f
 
@@ -45,37 +45,10 @@ class OverlayView(context: Context?, attrs: AttributeSet?) : View(context, attrs
         //val typeface = Typeface.createFromAsset(context!!.assets, "font/cascadia_mono_regular.otf")
         //textPaint.typeface = typeface
 
-        boxPaint.color = ContextCompat.getColor(context!!, R.color.bounding_box_color)
+        boxPaint.color = ContextCompat.getColor(context!!, R.color.pink)
         boxPaint.strokeWidth = 8F
         boxPaint.style = Paint.Style.STROKE
     }
-
-//    override fun draw(canvas: Canvas) {
-//        super.draw(canvas)
-//
-//        results.forEach {
-//            val left = it.x1 * width
-//            val top = it.y1 * height
-//            val right = it.x2 * width
-//            val bottom = it.y2 * height
-//
-//            canvas.drawRect(left, top, right, bottom, boxPaint)
-//            val drawableText = it.clsName
-//
-//            textBackgroundPaint.getTextBounds(drawableText, 0, drawableText.length, bounds)
-//            val textWidth = bounds.width()
-//            val textHeight = bounds.height()
-//            canvas.drawRect(
-//                left,
-//                top,
-//                left + textWidth + BOUNDING_RECT_TEXT_PADDING,
-//                top + textHeight + BOUNDING_RECT_TEXT_PADDING,
-//                textBackgroundPaint
-//            )
-//            canvas.drawText(drawableText, left, top + bounds.height(), textPaint)
-//
-//        }
-//    }
 
     override fun draw(canvas: Canvas) {
         super.draw(canvas)

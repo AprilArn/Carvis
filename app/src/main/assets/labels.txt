@@ -1,7 +1,7 @@
 beware of pedestrians
 bridge ahead
 bus stop area
-c intersection
+cross intersection
 circular ahead
 circular area
 curvy road ahead
@@ -10,19 +10,19 @@ enter left
 enter right
 gas station
 green light
-l intersection
-l soft turn
-l turn
+left intersection
+soft left turn
+left turn
 no entry
-no l turn
+no left turn
 no overtaking
 no parking
-no r turn
+no right turn
 no stop
 no u turn
-r intersection
-r soft turn
-r turn
+right intersection
+soft right turn
+right turn
 red light
 stop
 t intersection
