@@ -22,6 +22,7 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.WindowCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.aprilarn.carvis.Model.LABEL_PATH
 import com.aprilarn.carvis.Model.MODEL_PATH
@@ -46,6 +47,8 @@ class MainActivity : AppCompatActivity(), YoloV8Detector.DetectorListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
+        // System UI behaviour
+        //WindowCompat.setDecorFitsSystemWindows(window, false)
         setContentView(binding.root)
 
         // FullScreen
@@ -69,9 +72,30 @@ class MainActivity : AppCompatActivity(), YoloV8Detector.DetectorListener {
                 val isGpuSupported = detector?.isGpuSupported() ?: false
                 val isNnapiSupported = detector?.isNnapiSupported() ?: false
 
+                //binding.gpuButton.isEnabled = isGpuSupported
+                //binding.nnapiButton.isEnabled = isNnapiSupported
+                //binding.cpuButton.isEnabled = true
+
+                // GPU
                 binding.gpuButton.isEnabled = isGpuSupported
+                binding.gpuButton.setBackgroundTintList(
+                    ContextCompat.getColorStateList(this,
+                        if (isGpuSupported) R.color.faded_blue else R.color.gray)
+                )
+
+                // NNAPI
                 binding.nnapiButton.isEnabled = isNnapiSupported
+                binding.nnapiButton.setBackgroundTintList(
+                    ContextCompat.getColorStateList(this,
+                        if (isNnapiSupported) R.color.faded_blue else R.color.gray)
+                )
+
+                // CPU selalu aktif
                 binding.cpuButton.isEnabled = true
+                binding.cpuButton.setBackgroundTintList(
+                    ContextCompat.getColorStateList(this, R.color.faded_blue)
+                )
+
 
                 // Set warna tombol sesuai delegate aktif
                 when (detector?.currentDelegate) {
@@ -115,15 +139,29 @@ class MainActivity : AppCompatActivity(), YoloV8Detector.DetectorListener {
         }
     }
 
+//    private fun updateButtonColors(selected: Button?) {
+//        val buttons = listOf(binding.gpuButton, binding.nnapiButton, binding.cpuButton)
+//        buttons.forEach {
+//            it.setBackgroundTintList(
+//                ContextCompat.getColorStateList(
+//                    this,
+//                    if (it == selected) R.color.blue else R.color.faded_blue
+//                )
+//            )
+//        }
+//    }
+
     private fun updateButtonColors(selected: Button?) {
         val buttons = listOf(binding.gpuButton, binding.nnapiButton, binding.cpuButton)
         buttons.forEach {
-            it.setBackgroundTintList(
-                ContextCompat.getColorStateList(
-                    this,
-                    if (it == selected) R.color.blue else R.color.gray
+            if (it.isEnabled) {
+                it.setBackgroundTintList(
+                    ContextCompat.getColorStateList(
+                        this,
+                        if (it == selected) R.color.blue else R.color.faded_blue
+                    )
                 )
-            )
+            }
         }
     }
 

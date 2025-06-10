@@ -6,5 +6,6 @@
     <color name="gray">#999</color>
     <color name="blue">#3b3b99</color>
     <color name="dark_blue">#14141f</color>
+    <color name="faded_blue">#262638</color>
     <color name="outline_box">#353560</color>
 </resources>
