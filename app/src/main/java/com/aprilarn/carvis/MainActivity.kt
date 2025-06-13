@@ -1,12 +1,10 @@
 package com.aprilarn.carvis
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.os.Bundle
-import android.os.Message
 import android.util.Log
 import android.view.View
 import android.widget.Button
