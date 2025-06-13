@@ -5,7 +5,6 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
-//import android.graphics.Typeface
 import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat
@@ -40,10 +39,6 @@ class OverlayView(context: Context?, attrs: AttributeSet?) : View(context, attrs
         textPaint.color = Color.WHITE
         textPaint.style = Paint.Style.FILL
         textPaint.textSize = 50f
-
-        // Change the font to Cascadia
-        //val typeface = Typeface.createFromAsset(context!!.assets, "font/cascadia_mono_regular.otf")
-        //textPaint.typeface = typeface
 
         boxPaint.color = ContextCompat.getColor(context!!, R.color.pink)
         boxPaint.strokeWidth = 8F
