@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-feature android:name="android.hardware.camera" />
+
     <uses-permission android:name="android.permission.CAMERA" />
 
     <application
@@ -16,9 +17,17 @@
         android:theme="@style/Theme.Carvis"
         tools:targetApi="31">
         <activity
+            android:name=".WarningScreenActivity"
+            android:screenOrientation="landscape"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:screenOrientation="landscape"
-            android:exported="true">
+            android:exported="false" />
+        <activity
+            android:name=".SplashScreenActivity"
+            android:exported="true"
+            android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -28,7 +37,7 @@
 
         <uses-native-library
             android:name="libOpenCL.so"
-            android:required="false"/>
+            android:required="false" />
         <uses-native-library
             android:name="libOpenCL-pixel.so"
             android:required="false" />
