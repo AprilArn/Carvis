@@ -11,7 +11,6 @@ import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.Toast
-import android.widget.ToggleButton
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.AspectRatio
@@ -69,9 +68,25 @@ class MainActivity : AppCompatActivity(), YoloV8Detector.DetectorListener {
                 val isGpuSupported = detector?.isGpuSupported() ?: false
                 val isNnapiSupported = detector?.isNnapiSupported() ?: false
 
+                // GPU
                 binding.gpuButton.isEnabled = isGpuSupported
+                binding.gpuButton.setBackgroundTintList(
+                    ContextCompat.getColorStateList(this,
+                        if (isGpuSupported) R.color.faded_blue else R.color.gray)
+                )
+
+                // NNAPI
                 binding.nnapiButton.isEnabled = isNnapiSupported
+                binding.nnapiButton.setBackgroundTintList(
+                    ContextCompat.getColorStateList(this,
+                        if (isNnapiSupported) R.color.faded_blue else R.color.gray)
+                )
+
+                // CPU selalu aktif
                 binding.cpuButton.isEnabled = true
+                binding.cpuButton.setBackgroundTintList(
+                    ContextCompat.getColorStateList(this, R.color.faded_blue)
+                )
 
                 // Set warna tombol sesuai delegate aktif
                 when (detector?.currentDelegate) {
@@ -81,7 +96,6 @@ class MainActivity : AppCompatActivity(), YoloV8Detector.DetectorListener {
                     else -> updateButtonColors(null) // Tidak ada yang aktif
                 }
             }
-
         }
 
         if (allPermissionsGranted()) {
@@ -118,12 +132,14 @@ class MainActivity : AppCompatActivity(), YoloV8Detector.DetectorListener {
     private fun updateButtonColors(selected: Button?) {
         val buttons = listOf(binding.gpuButton, binding.nnapiButton, binding.cpuButton)
         buttons.forEach {
-            it.setBackgroundTintList(
-                ContextCompat.getColorStateList(
-                    this,
-                    if (it == selected) R.color.blue else R.color.gray
+            if (it.isEnabled) {
+                it.setBackgroundTintList(
+                    ContextCompat.getColorStateList(
+                        this,
+                        if (it == selected) R.color.blue else R.color.faded_blue
+                    )
                 )
-            )
+            }
         }
     }
 
@@ -260,7 +276,7 @@ class MainActivity : AppCompatActivity(), YoloV8Detector.DetectorListener {
 
             // Ambil nama kelas dari hasil deteksi yang confidence-nya cukup tinggi
             val predictedNames = boundingBoxes
-                .filter { it.cnf > 0.7f }
+                .filter { it.cnf > 0.75f }
                 .map { it.clsName }
                 .distinct()
 

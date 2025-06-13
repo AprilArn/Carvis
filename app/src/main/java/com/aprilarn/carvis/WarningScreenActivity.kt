@@ -1,0 +1,40 @@
+package com.aprilarn.carvis
+
+import android.content.Intent
+import android.os.Bundle
+import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import com.aprilarn.carvis.databinding.ActivityWarningScreenBinding
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+
+class WarningScreenActivity : AppCompatActivity() {
+
+    private val binding: ActivityWarningScreenBinding by lazy {
+        ActivityWarningScreenBinding.inflate(layoutInflater)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        setContentView(binding.root)
+        handlerNavigate()
+    }
+
+    private fun handlerNavigate() {
+        lifecycleScope.launch {
+            delay(5000)
+            navigateToMain()
+        }
+    }
+
+    private fun navigateToMain() {
+        startActivity(
+            Intent(this, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+            }
+        )
+    }
+
+}
