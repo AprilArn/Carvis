@@ -278,7 +278,7 @@ class MainActivity : AppCompatActivity(), YoloV8Detector.DetectorListener {
 
             // Ambil nama kelas dari hasil deteksi yang confidence-nya cukup tinggi
             val predictedNames = boundingBoxes
-                .filter { it.cnf > 0.75f }
+                .filter { it.cnf > 0.8f }
                 .map { it.clsName }
                 .distinct()
 
