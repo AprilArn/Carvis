@@ -70,6 +70,5 @@ dependencies {
     implementation("org.tensorflow:tensorflow-lite-select-tf-ops:2.16.1")
 
     // OpenCV
-    //implementation (libs.opencv.opencv.android)
 
 }
