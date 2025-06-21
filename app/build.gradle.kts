@@ -35,7 +35,18 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
-    
+
+    // changing to 17 to handle OpenCV
+//    compileOptions {
+//        sourceCompatibility = JavaVersion.VERSION_17
+//        targetCompatibility = JavaVersion.VERSION_17
+//    }
+//
+//    kotlinOptions {
+//        jvmTarget = "17"
+//    }
+    // -------------------------------
+
     buildFeatures {
         viewBinding = true
         buildConfig = true
@@ -70,6 +81,6 @@ dependencies {
     implementation("org.tensorflow:tensorflow-lite-select-tf-ops:2.16.1")
 
     // OpenCV
-    //implementation (libs.opencv.opencv.android)
+    //implementation(project(":opencv"))
 
 }

@@ -79,13 +79,13 @@
 
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Predicted Class (conf ≥ 75%)"
+            android:text="Predicted Class (conf ≥ 80%)"
             android:fontFamily="@font/cascadia_mono_regular"
             android:textStyle="bold"
             android:textColor="@color/white"
             android:textSize="12sp"
             android:layout_marginStart="12dp"
-            android:layout_marginTop="2dp"
+            android:layout_marginTop="1dp"
 
             >
 
@@ -159,7 +159,7 @@
             android:textColor="@color/white"
             android:textSize="12sp"
             android:layout_marginStart="12dp"
-            android:layout_marginTop="2dp"
+            android:layout_marginTop="1dp"
 
             >
 

@@ -21,3 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Carvis"
 include(":app")
+//include(":opencv")

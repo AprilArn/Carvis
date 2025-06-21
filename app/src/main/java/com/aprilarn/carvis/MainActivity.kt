@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.aprilarn.carvis.Model.LABEL_PATH
 import com.aprilarn.carvis.Model.MODEL_PATH
 import com.aprilarn.carvis.databinding.ActivityMainBinding
+//import org.opencv.android.OpenCVLoader
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -44,6 +45,13 @@ class MainActivity : AppCompatActivity(), YoloV8Detector.DetectorListener {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+//        if(OpenCVLoader.initLocal()) {
+//            Log.i("opencv", "Successfully integrated")
+//        }
+
+        // Mencegah layar mati
+        window.addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         // FullScreen
         window.decorView.apply {
@@ -274,7 +282,7 @@ class MainActivity : AppCompatActivity(), YoloV8Detector.DetectorListener {
 
             // Ambil nama kelas dari hasil deteksi yang confidence-nya cukup tinggi
             val predictedNames = boundingBoxes
-                .filter { it.cnf > 0.75f }
+                .filter { it.cnf > 0.8f }
                 .map { it.clsName }
                 .distinct()
 
