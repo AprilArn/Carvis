@@ -46,6 +46,10 @@ class MainActivity : AppCompatActivity(), YoloV8Detector.DetectorListener {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+//        if(OpenCVLoader.initLocal()) {
+//            Log.i("opencv", "Successfully integrated")
+//        }
+
         // Mencegah layar mati
         window.addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
