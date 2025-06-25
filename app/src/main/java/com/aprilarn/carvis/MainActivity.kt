@@ -23,7 +23,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.aprilarn.carvis.Model.LABEL_PATH
 import com.aprilarn.carvis.Model.MODEL_PATH
 import com.aprilarn.carvis.databinding.ActivityMainBinding
-//import org.opencv.android.OpenCVLoader
+import org.opencv.android.OpenCVLoader
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -46,9 +46,9 @@ class MainActivity : AppCompatActivity(), YoloV8Detector.DetectorListener {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-//        if(OpenCVLoader.initLocal()) {
-//            Log.i("opencv", "Successfully integrated")
-//        }
+        if(OpenCVLoader.initLocal()) {
+            Log.i("opencv", "Successfully integrated")
+        }
 
         // Mencegah layar mati
         window.addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -207,6 +207,31 @@ class MainActivity : AppCompatActivity(), YoloV8Detector.DetectorListener {
             )
 
             detector?.detect(rotatedBitmap)
+
+            // Steering advice using lane detection
+            val laneLines = LaneDetector.detectLaneWithLines(rotatedBitmap)
+            runOnUiThread {
+                binding.overlay.setImageSize(rotatedBitmap.width, rotatedBitmap.height)
+                binding.overlay.setLaneLines(laneLines)
+
+                if (laneLines.size == 2) {
+                    val leftX = laneLines[0].first.x
+                    val rightX = laneLines[1].first.x
+                    val midX = ((leftX + rightX) / 2).toInt()
+                    val centerX = rotatedBitmap.width / 2
+                    val offset = midX - centerX
+
+                    val direction = when {
+                        offset < -40 -> "Turn Left"
+                        offset > 40 -> "Turn Right"
+                        else -> "Straight"
+                    }
+
+                    val scaledMidX = midX * binding.overlay.width / rotatedBitmap.width
+                    binding.overlay.setSteeringInfo(scaledMidX, direction)
+                }
+            }
+
         }
 
         cameraProvider.unbindAll()

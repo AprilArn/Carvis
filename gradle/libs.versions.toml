@@ -1,6 +1,7 @@
 [versions]
 agp = "8.10.1"
-kotlin = "2.0.21"
+# kotlin = "2.0.21"
+kotlin = "1.9.22"
 coreKtx = "1.16.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -12,7 +13,7 @@ constraintlayout = "2.2.1"
 cameraCore = "1.4.2"
 cameraCamera2 = "1.4.2"
 cameraLifecycle = "1.4.2"
-# opencvAndroidVersion = "4.11.0"
+# opencvAndroidVersion = "4.10.0"
 tensorflowLite = "2.16.1"
 tensorflowLiteSupport = "0.4.4"
 

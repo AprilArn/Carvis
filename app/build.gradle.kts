@@ -9,7 +9,8 @@ android {
 
     defaultConfig {
         applicationId = "com.aprilarn.carvis"
-        minSdk = 24
+//        minSdk = 24
+        minSdk = 26
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -27,24 +28,24 @@ android {
         }
     }
 
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-
-    kotlinOptions {
-        jvmTarget = "11"
-    }
-
-    // changing to 17 to handle OpenCV
 //    compileOptions {
-//        sourceCompatibility = JavaVersion.VERSION_17
-//        targetCompatibility = JavaVersion.VERSION_17
+//        sourceCompatibility = JavaVersion.VERSION_11
+//        targetCompatibility = JavaVersion.VERSION_11
 //    }
 //
 //    kotlinOptions {
-//        jvmTarget = "17"
+//        jvmTarget = "11"
 //    }
+
+    // changing to 17 to handle OpenCV
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = "17"
+    }
     // -------------------------------
 
     buildFeatures {
@@ -81,6 +82,6 @@ dependencies {
     implementation("org.tensorflow:tensorflow-lite-select-tf-ops:2.16.1")
 
     // OpenCV
-    //implementation(project(":opencv"))
+    implementation(project(":opencv"))
 
 }
