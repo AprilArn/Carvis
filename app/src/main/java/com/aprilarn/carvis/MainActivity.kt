@@ -209,10 +209,37 @@ class MainActivity : AppCompatActivity(), YoloV8Detector.DetectorListener {
             detector?.detect(rotatedBitmap)
 
             // Steering advice using lane detection
+//            val laneLines = LaneDetector.detectLaneWithLines(rotatedBitmap)
+//            runOnUiThread {
+//                binding.overlay.setImageSize(rotatedBitmap.width, rotatedBitmap.height)
+//                binding.overlay.setLaneLines(laneLines)
+//
+//                if (laneLines.size == 2) {
+//                    val leftX = laneLines[0].first.x
+//                    val rightX = laneLines[1].first.x
+//                    val midX = ((leftX + rightX) / 2).toInt()
+//                    val centerX = rotatedBitmap.width / 2
+//                    val offset = midX - centerX
+//
+//                    val direction = when {
+//                        offset < -45 -> "Turn Left"
+//                        offset > 45 -> "Turn Right"
+//                        else -> ""
+//                    }
+//
+//                    val scaledMidX = midX * binding.overlay.width / rotatedBitmap.width
+//                    binding.overlay.setSteeringInfo(scaledMidX, direction)
+//                } else {
+//                    // Tetap panggil invalidate agar steering info lama tetap digambar
+//                    binding.overlay.setSteeringInfo()
+//                }
+//            }
+
+            // Steering advice using lane detection
             val laneLines = LaneDetector.detectLaneWithLines(rotatedBitmap)
             runOnUiThread {
                 binding.overlay.setImageSize(rotatedBitmap.width, rotatedBitmap.height)
-                binding.overlay.setLaneLines(laneLines)
+                binding.overlay.setLaneLines(laneLines) // Ini akan memicu invalidate() di OverlayView
 
                 if (laneLines.size == 2) {
                     val leftX = laneLines[0].first.x
@@ -230,9 +257,12 @@ class MainActivity : AppCompatActivity(), YoloV8Detector.DetectorListener {
                     val scaledMidX = midX * binding.overlay.width / rotatedBitmap.width
                     binding.overlay.setSteeringInfo(scaledMidX, direction)
                 } else {
-                    // Tetap panggil invalidate agar steering info lama tetap digambar
+                    // Jika laneLines bukan 2, panggil setSteeringInfo tanpa argumen
+                    // Ini akan memicu logika timeout di OverlayView untuk membersihkan info kemudi
                     binding.overlay.setSteeringInfo()
                 }
+                // Tidak perlu binding.overlay.invalidate() di sini,
+                // karena setLaneLines dan setSteeringInfo sudah memanggil invalidate.
             }
 
         }
@@ -290,15 +320,52 @@ class MainActivity : AppCompatActivity(), YoloV8Detector.DetectorListener {
         ).toTypedArray()
     }
 
+//    override fun onEmptyDetect() {
+//        runOnUiThread {
+//            binding.overlay.clear()
+//
+//            // Reset inference time ke --ms
+//            binding.inferenceTime.text = "--ms"
+//
+//            // Kosongkan adapter (tidak ada prediksi yang ditampilkan)
+//            binding.predictionList.adapter = PredictedAdapter(emptyList())
+//        }
+//    }
+//
+//    override fun onDetect(boundingBoxes: List<BoundingBox>, inferenceTime: Long) {
+//        runOnUiThread {
+//            binding.inferenceTime.text = "${inferenceTime}ms"
+//            binding.overlay.setResults(boundingBoxes)
+//
+//            // Ambil nama kelas dari hasil deteksi yang confidence-nya cukup tinggi
+//            val predictedNames = boundingBoxes
+//                .filter { it.cnf > 0.8f }
+//                .map { it.clsName }
+//                .distinct()
+//
+//            if (predictedNames != predictedAdapter.items) {
+//                predictedAdapter.updateItems(predictedNames)
+//            }
+//
+//            // Log.d("DEBUG", "Predicted names: $predictedNames")
+//
+//            binding.predictionList.adapter = PredictedAdapter(predictedNames)
+//        }
+//    }
+
     override fun onEmptyDetect() {
         runOnUiThread {
-            binding.overlay.clear()
+            binding.overlay.clearBoundingBoxes() // Hanya bersihkan bounding box
+            // Tidak perlu memanggil binding.overlay.clearLaneInfo() di sini
+            // karena LaneDetector berjalan secara terpisah dan OverlayView akan
+            // mengelola timeout steering advice secara internal.
 
             // Reset inference time ke --ms
             binding.inferenceTime.text = "--ms"
 
             // Kosongkan adapter (tidak ada prediksi yang ditampilkan)
             binding.predictionList.adapter = PredictedAdapter(emptyList())
+            binding.overlay.invalidate() // Pastikan overlay digambar ulang
         }
     }
 
@@ -320,6 +387,7 @@ class MainActivity : AppCompatActivity(), YoloV8Detector.DetectorListener {
             // Log.d("DEBUG", "Predicted names: $predictedNames")
 
             binding.predictionList.adapter = PredictedAdapter(predictedNames)
+            // invalidate() sudah dipanggil di setResults, jadi tidak perlu lagi di sini
         }
     }
 
