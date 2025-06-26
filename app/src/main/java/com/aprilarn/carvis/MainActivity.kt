@@ -222,18 +222,20 @@ class MainActivity : AppCompatActivity(), YoloV8Detector.DetectorListener {
                     val offset = midX - centerX
 
                     val direction = when {
-                        offset < -40 -> "Turn Left"
-                        offset > 40 -> "Turn Right"
-                        else -> "Straight"
+                        offset < -45 -> "Turn Left"
+                        offset > 45 -> "Turn Right"
+                        else -> ""
                     }
 
                     val scaledMidX = midX * binding.overlay.width / rotatedBitmap.width
                     binding.overlay.setSteeringInfo(scaledMidX, direction)
+                } else {
+                    // Tetap panggil invalidate agar steering info lama tetap digambar
+                    binding.overlay.setSteeringInfo()
                 }
             }
 
         }
-
         cameraProvider.unbindAll()
 
         try {
