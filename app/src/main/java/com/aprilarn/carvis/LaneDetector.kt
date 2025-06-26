@@ -67,7 +67,7 @@ object LaneDetector {
     private fun detectLines(image: Mat): List<Line> {
         val lines = Mat()
         // theta, treshold, minLineLength, maxLineGap
-        Imgproc.HoughLinesP(image, lines, 1.0, Math.PI / 180, 75, 40.0, 80.0)
+        Imgproc.HoughLinesP(image, lines, 1.0, Math.PI / 180, 78, 40.0, 80.0)
 
         val result = mutableListOf<Line>()
         for (i in 0 until lines.rows()) {

@@ -209,33 +209,6 @@ class MainActivity : AppCompatActivity(), YoloV8Detector.DetectorListener {
             detector?.detect(rotatedBitmap)
 
             // Steering advice using lane detection
-//            val laneLines = LaneDetector.detectLaneWithLines(rotatedBitmap)
-//            runOnUiThread {
-//                binding.overlay.setImageSize(rotatedBitmap.width, rotatedBitmap.height)
-//                binding.overlay.setLaneLines(laneLines)
-//
-//                if (laneLines.size == 2) {
-//                    val leftX = laneLines[0].first.x
-//                    val rightX = laneLines[1].first.x
-//                    val midX = ((leftX + rightX) / 2).toInt()
-//                    val centerX = rotatedBitmap.width / 2
-//                    val offset = midX - centerX
-//
-//                    val direction = when {
-//                        offset < -45 -> "Turn Left"
-//                        offset > 45 -> "Turn Right"
-//                        else -> ""
-//                    }
-//
-//                    val scaledMidX = midX * binding.overlay.width / rotatedBitmap.width
-//                    binding.overlay.setSteeringInfo(scaledMidX, direction)
-//                } else {
-//                    // Tetap panggil invalidate agar steering info lama tetap digambar
-//                    binding.overlay.setSteeringInfo()
-//                }
-//            }
-
-            // Steering advice using lane detection
             val laneLines = LaneDetector.detectLaneWithLines(rotatedBitmap)
             runOnUiThread {
                 binding.overlay.setImageSize(rotatedBitmap.width, rotatedBitmap.height)
@@ -312,6 +285,44 @@ class MainActivity : AppCompatActivity(), YoloV8Detector.DetectorListener {
         }
     }
 
+    override fun onEmptyDetect() {
+        runOnUiThread {
+            binding.overlay.clearBoundingBoxes() // Hanya bersihkan bounding box
+            // Tidak perlu memanggil binding.overlay.clearLaneInfo() di sini
+            // karena LaneDetector berjalan secara terpisah dan OverlayView akan
+            // mengelola timeout steering advice secara internal.
+
+            // Reset inference time ke --ms
+            binding.inferenceTime.text = "--ms"
+
+            // Kosongkan adapter (tidak ada prediksi yang ditampilkan)
+            binding.predictionList.adapter = PredictedAdapter(emptyList())
+            binding.overlay.invalidate() // Pastikan overlay digambar ulang
+        }
+    }
+
+    override fun onDetect(boundingBoxes: List<BoundingBox>, inferenceTime: Long) {
+        runOnUiThread {
+            binding.inferenceTime.text = "${inferenceTime}ms"
+            binding.overlay.setResults(boundingBoxes)
+
+            // Ambil nama kelas dari hasil deteksi yang confidence-nya cukup tinggi
+            val predictedNames = boundingBoxes
+                .filter { it.cnf > 0.8f }
+                .map { it.clsName }
+                .distinct()
+
+            if (predictedNames != predictedAdapter.items) {
+                predictedAdapter.updateItems(predictedNames)
+            }
+
+            // Log.d("DEBUG", "Predicted names: $predictedNames")
+
+            binding.predictionList.adapter = PredictedAdapter(predictedNames)
+            // invalidate() sudah dipanggil di setResults, jadi tidak perlu lagi di sini
+        }
+    }
+
     companion object {
         private const val TAG = "Camera"
         private const val REQUEST_CODE_PERMISSIONS = 10
@@ -352,43 +363,5 @@ class MainActivity : AppCompatActivity(), YoloV8Detector.DetectorListener {
 //            binding.predictionList.adapter = PredictedAdapter(predictedNames)
 //        }
 //    }
-
-    override fun onEmptyDetect() {
-        runOnUiThread {
-            binding.overlay.clearBoundingBoxes() // Hanya bersihkan bounding box
-            // Tidak perlu memanggil binding.overlay.clearLaneInfo() di sini
-            // karena LaneDetector berjalan secara terpisah dan OverlayView akan
-            // mengelola timeout steering advice secara internal.
-
-            // Reset inference time ke --ms
-            binding.inferenceTime.text = "--ms"
-
-            // Kosongkan adapter (tidak ada prediksi yang ditampilkan)
-            binding.predictionList.adapter = PredictedAdapter(emptyList())
-            binding.overlay.invalidate() // Pastikan overlay digambar ulang
-        }
-    }
-
-    override fun onDetect(boundingBoxes: List<BoundingBox>, inferenceTime: Long) {
-        runOnUiThread {
-            binding.inferenceTime.text = "${inferenceTime}ms"
-            binding.overlay.setResults(boundingBoxes)
-
-            // Ambil nama kelas dari hasil deteksi yang confidence-nya cukup tinggi
-            val predictedNames = boundingBoxes
-                .filter { it.cnf > 0.8f }
-                .map { it.clsName }
-                .distinct()
-
-            if (predictedNames != predictedAdapter.items) {
-                predictedAdapter.updateItems(predictedNames)
-            }
-
-            // Log.d("DEBUG", "Predicted names: $predictedNames")
-
-            binding.predictionList.adapter = PredictedAdapter(predictedNames)
-            // invalidate() sudah dipanggil di setResults, jadi tidak perlu lagi di sini
-        }
-    }
 
 }
