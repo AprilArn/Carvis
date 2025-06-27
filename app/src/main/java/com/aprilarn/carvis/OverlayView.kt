@@ -313,7 +313,7 @@ class OverlayView(context: Context?, attrs: AttributeSet?) : View(context, attrs
         canvas.drawLine(centerX.toFloat(), height.toFloat(), centerX.toFloat(), centerY, paintVerticalHorizontalLine)
 
         // Draw boundary line
-        listOf(centerX - 100, centerX + 100).forEach { x ->
+        listOf(centerX - 85, centerX + 85).forEach { x ->
             canvas.drawLine(x.toFloat(), centerY - 10, x.toFloat(), centerY + 10, paintBoundary)
         }
     }
@@ -333,11 +333,12 @@ class OverlayView(context: Context?, attrs: AttributeSet?) : View(context, attrs
         // Point(0.575 * width, 0.55 * height),            // Right top corner
         // Point(0.425 * width, 0.55 * height)             // Left top corner
 
-        path.moveTo(0f, currentHeight)                               // Left bottom
-        path.lineTo(currentWidth, currentHeight)                     // Right bottom
-        path.lineTo(0.575f * currentWidth, 0.55f * currentHeight)    // Right top
-        path.lineTo(0.425f * currentWidth, 0.55f * currentHeight)    // Left top
-        path.close() // Menutup poligon
+        path.moveTo(0f, currentHeight)                                // 1: Bottom-Left
+        path.lineTo(currentWidth, currentHeight)                      // 2: Bottom-Right
+        path.lineTo(currentWidth, 0.87f * currentHeight)              // 3: Mid-Right
+        path.lineTo(0.61f * currentWidth, 0.55f * currentHeight)      // 4: Top-Right
+        path.lineTo(0.39f * currentWidth, 0.55f * currentHeight)      // 5: Top-Left
+        path.lineTo(0f, 0.87f * currentHeight)
 
         canvas.drawPath(path, roiPaint)
     }

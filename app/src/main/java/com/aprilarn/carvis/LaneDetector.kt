@@ -52,12 +52,24 @@ object LaneDetector {
         val width = image.cols()
         val mask = Mat.zeros(image.size(), CvType.CV_8UC1)
 
+//        val polygon = MatOfPoint(
+//            Point(0.0, height.toDouble()),                  // Left bottom corner
+//            Point(width.toDouble(), height.toDouble()),     // Right bottom corner
+//            Point(0.575 * width, 0.55 * height),            // Right top corner
+//            Point(0.425 * width, 0.55 * height)             // Left top corner
+//        )
+
         val polygon = MatOfPoint(
-            Point(0.0, height.toDouble()),                  // Left bottom corner
-            Point(width.toDouble(), height.toDouble()),     // Right bottom corner
-            Point(0.575 * width, 0.55 * height),            // Right top corner
-            Point(0.425 * width, 0.55 * height)             // Left top corner
+
+            Point(0.0, height.toDouble()),                   // 1: Bottom-Left
+            Point(width.toDouble(), height.toDouble()),      // 2: Bottom-Right
+            Point(width.toDouble(), 0.87 * height),          // 3: Mid-Right
+            Point(0.61 * width, 0.55 * height),               // 4: Top-Right
+            Point(0.39 * width, 0.55 * height) ,              // 5: Top-Left
+            Point(0.0, 0.87 * height)                        // 6: Mid-Left
+
         )
+
         Imgproc.fillPoly(mask, listOf(polygon), Scalar(255.0))
         val masked = Mat()
         Core.bitwise_and(image, mask, masked)
