@@ -222,8 +222,8 @@ class MainActivity : AppCompatActivity(), YoloV8Detector.DetectorListener {
                     val offset = midX - centerX
 
                     val direction = when {
-                        offset < -45 -> "Turn Left"
-                        offset > 45 -> "Turn Right"
+                        offset < -45 -> "\u25C0 Turn Left"
+                        offset > 45 -> "Turn Right \u25B6"
                         else -> ""
                     }
 

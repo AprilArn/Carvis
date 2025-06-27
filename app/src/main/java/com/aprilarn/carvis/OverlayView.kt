@@ -252,11 +252,17 @@ class OverlayView(context: Context?, attrs: AttributeSet?) : View(context, attrs
         val centerX = width / 2
         val centerY = (height * 0.84f)
 
-        val paintLine = Paint().apply {
+        val paintVerticalHorizontalLine = Paint().apply {
             color = Color.YELLOW
             strokeWidth = 4f
             style = Paint.Style.STROKE
         }
+
+//        val paintHorizontalLine = Paint().apply {
+//            color = Color.CYAN
+//            strokeWidth = 4f
+//            style = Paint.Style.STROKE
+//        }
 
         val paintIndicator = Paint().apply {
             color = Color.GREEN
@@ -279,24 +285,34 @@ class OverlayView(context: Context?, attrs: AttributeSet?) : View(context, attrs
         if (laneMidX != null && steeringDirection != null && now - lastSteeringUpdateTime < steeringTimeoutMs) {
             val midX = laneMidX!!
 
-            canvas.drawLine(centerX.toFloat(), centerY, midX.toFloat(), centerY, paintLine)
-            canvas.drawLine(midX.toFloat(), centerY - 10, midX.toFloat(), centerY + 10, paintIndicator)
+            // Draw horizontal line to center indicator
+            canvas.drawLine(centerX.toFloat(), centerY, midX.toFloat(), centerY, paintVerticalHorizontalLine)
 
+            // Draw center support indicator
+            //canvas.drawLine(midX.toFloat(), centerY - 10, midX.toFloat(), centerY + 10, paintIndicator)
+
+            // Draw 3 indicator
             if (laneLines.size == 2) {
                 val leftX = ((laneLines[0].first.x / imageWidth) * width).toFloat()
                 val rightX = ((laneLines[1].first.x / imageWidth) * width).toFloat()
+
+                // leftX=left indicator, rightX=right indicator, midX=center indicator
                 listOf(leftX, rightX, midX.toFloat()).forEach { x ->
                     canvas.drawLine(x, centerY - 14, x, centerY + 14, paintIndicator)
                 }
             }
 
+            // Show text direction
             val textWidth = paintText.measureText(steeringDirection!!)
             canvas.drawText(steeringDirection!!, (width - textWidth) / 2, centerY - 40, paintText)
         } else if (now - lastSteeringUpdateTime >= steeringTimeoutMs) {
             clearLaneInfo()
         }
 
-        canvas.drawLine(centerX.toFloat(), height.toFloat(), centerX.toFloat(), centerY, paintLine)
+        // Draw Draw center vertical line
+        canvas.drawLine(centerX.toFloat(), height.toFloat(), centerX.toFloat(), centerY, paintVerticalHorizontalLine)
+
+        // Draw boundary line
         listOf(centerX - 100, centerX + 100).forEach { x ->
             canvas.drawLine(x.toFloat(), centerY - 10, x.toFloat(), centerY + 10, paintBoundary)
         }
