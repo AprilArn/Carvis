@@ -42,6 +42,7 @@ class MainActivity : AppCompatActivity(), YoloV8Detector.DetectorListener {
     private lateinit var cameraExecutor: ExecutorService
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -58,7 +59,7 @@ class MainActivity : AppCompatActivity(), YoloV8Detector.DetectorListener {
             systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_FULLSCREEN
         }
 
-        // ✅ Set layout manager
+        // Set layout manager
         predictedAdapter = PredictedAdapter(emptyList())
         binding.predictionList.layoutManager = LinearLayoutManager(this)
         binding.predictionList.adapter = predictedAdapter
@@ -71,6 +72,19 @@ class MainActivity : AppCompatActivity(), YoloV8Detector.DetectorListener {
 
             // Checking best resource
             runOnUiThread {
+                // Dapatkan delegate yang terpilih otomatis dari detector
+                val initialDelegate = detector?.currentDelegate
+                if (initialDelegate != null) {
+                    // Buat nama delegate menjadi string
+                    val delegateName = when (initialDelegate) {
+                        DelegateType.GPU -> "GPU (Fastest)"
+                        DelegateType.NNAPI -> "NNAPI (Accelerated)"
+                        DelegateType.CPU -> "CPU (Standard)"
+                    }
+                    // Tampilkan pesan pop-up
+                    toast("Auto-selected: $delegateName")
+                }
+
                 val isGpuSupported = detector?.isGpuSupported() ?: false
                 val isNnapiSupported = detector?.isNnapiSupported() ?: false
 
@@ -111,10 +125,23 @@ class MainActivity : AppCompatActivity(), YoloV8Detector.DetectorListener {
         }
 
         bindListeners()
+
     }
 
+    // Function to handle button clicks and delegate toggling
     private fun bindListeners() {
+
         val toggleDelegate = { delegate: DelegateType, button: Button ->
+            // 1. Buat pesan berdasarkan delegate yang dipilih
+            val message = when (delegate) {
+                DelegateType.GPU -> "Processing with GPU (Fastest)"
+                DelegateType.NNAPI -> "Processing with NNAPI (Accelerated)"
+                DelegateType.CPU -> "Processing with CPU (Standard)"
+            }
+            // 2. Tampilkan pesan menggunakan fungsi toast
+            toast(message)
+
+            // Kode yang sudah ada sebelumnya tetap dipertahankan
             cameraExecutor.submit {
                 detector?.restart(delegate)
             }
@@ -133,9 +160,12 @@ class MainActivity : AppCompatActivity(), YoloV8Detector.DetectorListener {
         binding.cpuButton.setOnClickListener {
             toggleDelegate(DelegateType.CPU, binding.cpuButton)
         }
+
     }
 
+    // Function to update button colors based on selection
     private fun updateButtonColors(selected: Button?) {
+
         val buttons = listOf(binding.gpuButton, binding.nnapiButton, binding.cpuButton)
         buttons.forEach {
             if (it.isEnabled) {
@@ -147,21 +177,25 @@ class MainActivity : AppCompatActivity(), YoloV8Detector.DetectorListener {
                 )
             }
         }
+
     }
 
+    // Function to start the camera
     private fun startCamera() {
+
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
         cameraProviderFuture.addListener({
             cameraProvider  = cameraProviderFuture.get()
             bindCameraUseCases()
         }, ContextCompat.getMainExecutor(this))
+
     }
 
+    // Function to bind camera use cases
     private fun bindCameraUseCases() {
+
         val cameraProvider = cameraProvider ?: throw IllegalStateException("Camera initialization failed.")
-
         val rotation = binding.viewFinder.display.rotation
-
         val cameraSelector = CameraSelector
             .Builder()
             .requireLensFacing(CameraSelector.LENS_FACING_BACK)
@@ -234,8 +268,6 @@ class MainActivity : AppCompatActivity(), YoloV8Detector.DetectorListener {
                     // Ini akan memicu logika timeout di OverlayView untuk membersihkan info kemudi
                     binding.overlay.setSteeringInfo()
                 }
-                // Tidak perlu binding.overlay.invalidate() di sini,
-                // karena setLaneLines dan setSteeringInfo sudah memanggil invalidate.
             }
 
         }
@@ -253,44 +285,56 @@ class MainActivity : AppCompatActivity(), YoloV8Detector.DetectorListener {
         } catch(exc: Exception) {
             Log.e(TAG, "Use case binding failed", exc)
         }
+
     }
 
+    // Function to check if all required permissions are granted
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
+
         ContextCompat.checkSelfPermission(baseContext, it) == PackageManager.PERMISSION_GRANTED
+
     }
 
+    // Function to handle permission request result
     private val requestPermissionLauncher = registerForActivityResult(
+
         ActivityResultContracts.RequestMultiplePermissions()) {
         if (it[Manifest.permission.CAMERA] == true) { startCamera() }
+
     }
 
+    // Function to show a toast message
     private fun toast(message: String) {
+
         runOnUiThread {
             Toast.makeText(baseContext, message, Toast.LENGTH_LONG).show()
         }
+
     }
 
     override fun onDestroy() {
+
         super.onDestroy()
         detector?.close()
         cameraExecutor.shutdown()
+
     }
 
     override fun onResume() {
+
         super.onResume()
         if (allPermissionsGranted()){
             startCamera()
         } else {
             requestPermissionLauncher.launch(REQUIRED_PERMISSIONS)
         }
+
     }
 
     override fun onEmptyDetect() {
+
         runOnUiThread {
-            binding.overlay.clearBoundingBoxes() // Hanya bersihkan bounding box
-            // Tidak perlu memanggil binding.overlay.clearLaneInfo() di sini
-            // karena LaneDetector berjalan secara terpisah dan OverlayView akan
-            // mengelola timeout steering advice secara internal.
+            binding.overlay.clearBoundingBoxes()
 
             // Reset inference time ke --ms
             binding.inferenceTime.text = "--ms"
@@ -299,14 +343,16 @@ class MainActivity : AppCompatActivity(), YoloV8Detector.DetectorListener {
             binding.predictionList.adapter = PredictedAdapter(emptyList())
             binding.overlay.invalidate() // Pastikan overlay digambar ulang
         }
+
     }
 
     override fun onDetect(boundingBoxes: List<BoundingBox>, inferenceTime: Long) {
+
         runOnUiThread {
             binding.inferenceTime.text = "${inferenceTime}ms"
             binding.overlay.setResults(boundingBoxes)
 
-            // Ambil nama kelas dari hasil deteksi yang confidence-nya cukup tinggi
+            // Ambil nama kelas dari hasil deteksi yang confidence-nya lebih dari 80%
             val predictedNames = boundingBoxes
                 .filter { it.cnf > 0.8f }
                 .map { it.clsName }
@@ -319,49 +365,18 @@ class MainActivity : AppCompatActivity(), YoloV8Detector.DetectorListener {
             // Log.d("DEBUG", "Predicted names: $predictedNames")
 
             binding.predictionList.adapter = PredictedAdapter(predictedNames)
-            // invalidate() sudah dipanggil di setResults, jadi tidak perlu lagi di sini
         }
+
     }
 
     companion object {
+
         private const val TAG = "Camera"
         private const val REQUEST_CODE_PERMISSIONS = 10
         private val REQUIRED_PERMISSIONS = mutableListOf (
             Manifest.permission.CAMERA
         ).toTypedArray()
-    }
 
-//    override fun onEmptyDetect() {
-//        runOnUiThread {
-//            binding.overlay.clear()
-//
-//            // Reset inference time ke --ms
-//            binding.inferenceTime.text = "--ms"
-//
-//            // Kosongkan adapter (tidak ada prediksi yang ditampilkan)
-//            binding.predictionList.adapter = PredictedAdapter(emptyList())
-//        }
-//    }
-//
-//    override fun onDetect(boundingBoxes: List<BoundingBox>, inferenceTime: Long) {
-//        runOnUiThread {
-//            binding.inferenceTime.text = "${inferenceTime}ms"
-//            binding.overlay.setResults(boundingBoxes)
-//
-//            // Ambil nama kelas dari hasil deteksi yang confidence-nya cukup tinggi
-//            val predictedNames = boundingBoxes
-//                .filter { it.cnf > 0.8f }
-//                .map { it.clsName }
-//                .distinct()
-//
-//            if (predictedNames != predictedAdapter.items) {
-//                predictedAdapter.updateItems(predictedNames)
-//            }
-//
-//            // Log.d("DEBUG", "Predicted names: $predictedNames")
-//
-//            binding.predictionList.adapter = PredictedAdapter(predictedNames)
-//        }
-//    }
+    }
 
 }
