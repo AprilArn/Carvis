@@ -19,11 +19,13 @@ import org.tensorflow.lite.support.tensorbuffer.TensorBuffer
 enum class DelegateType { GPU, NNAPI, CPU }
 
 class YoloV8Detector (
+
     private val context: Context,
     private val modelPath: String,
     private val labelPath: String?,
     private val detectorListener: DetectorListener,
     private val message: (String) -> Unit
+
 ) {
 
     private var labels = mutableListOf<String>()
@@ -78,14 +80,17 @@ class YoloV8Detector (
     }
 
     private fun getBestAvailableDelegate(): DelegateType {
+
         return when {
             isGpuSupported() -> DelegateType.GPU
             isNnapiSupported() -> DelegateType.NNAPI
             else -> DelegateType.CPU
         }
+
     }
 
     private fun createInterpreter(delegate: DelegateType): Interpreter {
+
         val options = Interpreter.Options()
         when (delegate) {
             DelegateType.GPU -> {
@@ -105,18 +110,24 @@ class YoloV8Detector (
         }
         val model = FileUtil.loadMappedFile(context, modelPath)
         return Interpreter(model, options)
+
     }
 
     fun restart(delegate: DelegateType) {
+
         interpreter.close()
         interpreter = createInterpreter(delegate)
+
     }
 
     fun close() {
+
         interpreter.close()
+
     }
 
     fun detect(frame: Bitmap) {
+
         if (tensorWidth == 0 || tensorHeight == 0 || numChannel == 0 || numElements == 0) return
 
         var inferenceTime = SystemClock.uptimeMillis()
@@ -133,9 +144,11 @@ class YoloV8Detector (
         val bestBoxes = bestBox(output.floatArray)
         if (bestBoxes == null) detectorListener.onEmptyDetect()
         else detectorListener.onDetect(bestBoxes, inferenceTime)
+
     }
 
     private fun bestBox(array: FloatArray): List<BoundingBox>? {
+
         val boundingBoxes = mutableListOf<BoundingBox>()
         for (c in 0 until numElements) {
             var maxConf = CONFIDENCE_THRESHOLD
@@ -168,9 +181,11 @@ class YoloV8Detector (
         }
 
         return if (boundingBoxes.isEmpty()) null else applyNMS(boundingBoxes)
+
     }
 
     private fun applyNMS(boxes: List<BoundingBox>): MutableList<BoundingBox> {
+
         val sortedBoxes = boxes.sortedByDescending { it.cnf }.toMutableList()
         val selectedBoxes = mutableListOf<BoundingBox>()
 
@@ -183,9 +198,11 @@ class YoloV8Detector (
         }
 
         return selectedBoxes
+
     }
 
     private fun calculateIoU(box1: BoundingBox, box2: BoundingBox): Float {
+
         val x1 = maxOf(box1.x1, box2.x1)
         val y1 = maxOf(box1.y1, box2.y1)
         val x2 = minOf(box1.x2, box2.x2)
@@ -194,20 +211,25 @@ class YoloV8Detector (
         val area1 = box1.w * box1.h
         val area2 = box2.w * box2.h
         return intersection / (area1 + area2 - intersection)
+
     }
 
     interface DetectorListener {
+
         fun onEmptyDetect()
         fun onDetect(boundingBoxes: List<BoundingBox>, inferenceTime: Long)
+
     }
 
     companion object {
+
         private const val INPUT_MEAN = 0f
         private const val INPUT_STANDARD_DEVIATION = 255f
         private val INPUT_IMAGE_TYPE = DataType.FLOAT32
         private val OUTPUT_IMAGE_TYPE = DataType.FLOAT32
         private const val CONFIDENCE_THRESHOLD = 0.6f
         private const val IOU_THRESHOLD = 0.5f
+
     }
 
 }
