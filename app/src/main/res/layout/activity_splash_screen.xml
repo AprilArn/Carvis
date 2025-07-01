@@ -44,4 +44,60 @@
 
     </TextView>
 
+    <!-- LinearLayout baru untuk membungkus Ikon dan Nama GitHub -->
+    <LinearLayout
+
+        android:id="@+id/githubInfoContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        app:layout_constraintVertical_bias="0.8"
+        app:layout_constraintTop_toBottomOf="@+id/subText"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+
+            android:id="@+id/githubIcon"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:src="@drawable/github96"
+
+            >
+
+        </ImageView>
+
+        <TextView
+
+            android:id="@+id/githubName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            android:text="AprilArn"
+            android:paddingStart="3dp"
+
+            >
+
+        </TextView>
+
+    </LinearLayout>
+
+    <TextView
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="v2025.701.0"
+        android:textSize="12sp"
+        android:textColor="@color/white"
+        app:layout_constraintTop_toBottomOf="@+id/githubInfoContainer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+
+        >
+
+    </TextView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

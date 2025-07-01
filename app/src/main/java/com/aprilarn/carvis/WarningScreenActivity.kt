@@ -13,10 +13,13 @@ import kotlinx.coroutines.launch
 class WarningScreenActivity : AppCompatActivity() {
 
     private val binding: ActivityWarningScreenBinding by lazy {
+
         ActivityWarningScreenBinding.inflate(layoutInflater)
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         // Mencegah layar mati
         window.addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         // FullScreen
@@ -27,21 +30,26 @@ class WarningScreenActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(binding.root)
         handlerNavigate()
+
     }
 
     private fun handlerNavigate() {
+
         lifecycleScope.launch {
             delay(5500)
             navigateToMain()
         }
+
     }
 
     private fun navigateToMain() {
+
         startActivity(
             Intent(this, MainActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
             }
         )
+
     }
 
 }

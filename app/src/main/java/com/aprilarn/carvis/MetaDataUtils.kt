@@ -11,6 +11,7 @@ import java.nio.MappedByteBuffer
 object MetaDataUtils {
 
     fun extractNamesFromMetadata(model: MappedByteBuffer): List<String> {
+
         try {
             val metadataExtractor = MetadataExtractor(model)
             val inputStream = metadataExtractor.getAssociatedFile("temp_meta.txt")
@@ -29,9 +30,11 @@ object MetaDataUtils {
         } catch (_: Exception) {
             return emptyList()
         }
+
     }
 
     fun extractNamesFromLabelFile(context: Context, labelPath: String): List<String> {
+
         val labels = mutableListOf<String>()
         try {
             val inputStream: InputStream = context.assets.open(labelPath)
@@ -49,7 +52,9 @@ object MetaDataUtils {
         } catch (e: IOException) {
             return emptyList()
         }
+
     }
 
     val TEMP_CLASSES = List(1000) { "class${it + 1}" }
+
 }

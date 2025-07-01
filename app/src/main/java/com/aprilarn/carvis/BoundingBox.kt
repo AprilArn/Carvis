@@ -1,6 +1,7 @@
 package com.aprilarn.carvis
 
 data class BoundingBox(
+
     val x1: Float,
     val y1: Float,
     val x2: Float,
@@ -12,4 +13,5 @@ data class BoundingBox(
     val cnf: Float,
     val cls: Int,
     val clsName: String
+
 )
