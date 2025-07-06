@@ -4,11 +4,15 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Matrix
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.WindowInsets
+import android.view.WindowInsetsController
 import android.widget.Button
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.AspectRatio
@@ -44,6 +48,7 @@ class MainActivity : AppCompatActivity(), YoloV8Detector.DetectorListener {
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -55,8 +60,22 @@ class MainActivity : AppCompatActivity(), YoloV8Detector.DetectorListener {
         window.addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         // FullScreen
-        window.decorView.apply {
-            systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_FULLSCREEN
+//        window.decorView.apply {
+//            systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_FULLSCREEN
+//        }
+
+        // Cek jika versi Android adalah 11 (R) atau lebih baru
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            window.insetsController?.let {
+                it.hide(WindowInsets.Type.statusBars() or WindowInsets.Type.navigationBars())
+                it.systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            }
+        } else {
+            // Untuk versi Android yang lebih lama, gunakan metode lama (opsional tapi disarankan)
+            @Suppress("DEPRECATION")
+            window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_FULLSCREEN
+                    or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
         }
 
         // Set layout manager
@@ -140,23 +159,26 @@ class MainActivity : AppCompatActivity(), YoloV8Detector.DetectorListener {
             }
             // 2. Tampilkan pesan menggunakan fungsi toast
             toast(message)
-
-            // Kode yang sudah ada sebelumnya tetap dipertahankan
+            // 3. Hentikan detektor yang sedang berjalan
             cameraExecutor.submit {
                 detector?.restart(delegate)
             }
+            // 4. Perbarui tombol yang aktif
             activeDelegate = delegate
             updateButtonColors(button)
         }
 
+        // Set onClickListener untuk tombol GPU
         binding.gpuButton.setOnClickListener {
             toggleDelegate(DelegateType.GPU, binding.gpuButton)
         }
 
+        // Set onClickListener untuk tombol NNAPI
         binding.nnapiButton.setOnClickListener {
             toggleDelegate(DelegateType.NNAPI, binding.nnapiButton)
         }
 
+        // Set onClickListener untuk tombol CPU
         binding.cpuButton.setOnClickListener {
             toggleDelegate(DelegateType.CPU, binding.cpuButton)
         }
@@ -168,10 +190,12 @@ class MainActivity : AppCompatActivity(), YoloV8Detector.DetectorListener {
 
         val buttons = listOf(binding.gpuButton, binding.nnapiButton, binding.cpuButton)
         buttons.forEach {
+            // Set warna latar belakang tombol sesuai dengan apakah tombol tersebut dipilih atau tidak
             if (it.isEnabled) {
                 it.setBackgroundTintList(
                     ContextCompat.getColorStateList(
                         this,
+                        // Jika tombol ini dipilih, gunakan warna biru, jika tidak, gunakan biru pudar
                         if (it == selected) R.color.blue else R.color.faded_blue
                     )
                 )
@@ -183,7 +207,10 @@ class MainActivity : AppCompatActivity(), YoloV8Detector.DetectorListener {
     // Function to start the camera
     private fun startCamera() {
 
+        // Get the camera provider instance
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
+
+        // Add a listener to the camera provider future
         cameraProviderFuture.addListener({
             cameraProvider  = cameraProviderFuture.get()
             bindCameraUseCases()
@@ -194,18 +221,22 @@ class MainActivity : AppCompatActivity(), YoloV8Detector.DetectorListener {
     // Function to bind camera use cases
     private fun bindCameraUseCases() {
 
+        // Check if cameraProvider is null
         val cameraProvider = cameraProvider ?: throw IllegalStateException("Camera initialization failed.")
-        val rotation = binding.viewFinder.display.rotation
+        val rotation = binding.viewFinder.display.rotation // Get the current rotation of the viewfinder
+        // Create a camera selector for the back camera
         val cameraSelector = CameraSelector
             .Builder()
             .requireLensFacing(CameraSelector.LENS_FACING_BACK)
             .build()
 
+        // Create a preview use case
         preview =  Preview.Builder()
             .setTargetAspectRatio(AspectRatio.RATIO_4_3)
             .setTargetRotation(rotation)
             .build()
 
+        // Create an image analysis use case
         imageAnalyzer = ImageAnalysis.Builder()
             .setTargetAspectRatio(AspectRatio.RATIO_4_3)
             .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
@@ -213,7 +244,9 @@ class MainActivity : AppCompatActivity(), YoloV8Detector.DetectorListener {
             .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_RGBA_8888)
             .build()
 
+        // Mengatur ImageAnalyzer untuk memproses frame kamera
         imageAnalyzer?.setAnalyzer(cameraExecutor) { imageProxy ->
+            // Membuat bitmap kosong dengan dimensi imageProxy
             val bitmapBuffer = Bitmap.createBitmap(
                 imageProxy.width,
                 imageProxy.height,
