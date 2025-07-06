@@ -3,4 +3,6 @@
     <string name="gpu">GPU</string>
     <string name="nnapi">NN</string>
     <string name="cpu">CPU</string>
+    <string name="Version">v2025.706.0</string>
+    <string name="GitName">AprilArn</string>
 </resources>

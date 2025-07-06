@@ -9,10 +9,11 @@ object LaneDetector {
 
     private var previousLines: List<Line>? = null
     private var lastDetectionTime: Long = 0L
-    private const val MAX_NO_DETECTION_DURATION = 1000 // milliseconds
+    private const val MAX_NO_DETECTION_DURATION = 1000 // Durasi maksimum (dalam milidetik) tanpa deteksi sebelum previousLines di-reset menjadi null
 
     data class Line(val start: Point, val end: Point)
 
+    // Fungsi utama untuk mendeteksi garis jalur pada bitmap input
     fun detectLaneWithLines(bitmap: Bitmap): List<Pair<Point, Point>> {
 
         val mat = Mat()
@@ -35,6 +36,7 @@ object LaneDetector {
 
     }
 
+    // Fungsi untuk mendeteksi tepi menggunakan algoritma Canny
     private fun detectEdges(frame: Mat): Mat {
 
         val gray = Mat()
@@ -42,12 +44,13 @@ object LaneDetector {
         val edges = Mat()
 
         Imgproc.cvtColor(frame, gray, Imgproc.COLOR_BGR2GRAY)
-        Imgproc.GaussianBlur(gray, blur, Size(5.0, 5.0), 0.0)
-        Imgproc.Canny(blur, edges, 50.0, 150.0)
+        Imgproc.GaussianBlur(gray, blur, Size(5.0, 5.0), 0.0) // Menggunakan Gaussian Blur untuk mengurangi noise
+        Imgproc.Canny(blur, edges, 50.0, 150.0) // Menggunakan Canny Edge Detection untuk mendeteksi tepi
         return edges
 
     }
 
+    // Fungsi untuk menerapkan Region of Interest (ROI) pada gambar
     private fun applyROI(image: Mat): Mat {
 
         val height = image.rows()
@@ -72,13 +75,14 @@ object LaneDetector {
 
         )
 
-        Imgproc.fillPoly(mask, listOf(polygon), Scalar(255.0))
-        val masked = Mat()
-        Core.bitwise_and(image, mask, masked)
+        Imgproc.fillPoly(mask, listOf(polygon), Scalar(255.0)) // Mengisi area polygon pada mask dengan nilai 255 (putih)
+        val masked = Mat() // Mat untuk menyimpan hasil masking
+        Core.bitwise_and(image, mask, masked) // Menggunakan bitwise_and untuk menerapkan ROI pada gambar
         return masked
 
     }
 
+    // Fungsi untuk mendeteksi garis menggunakan Probabilistic Hough Line Transform (HoughLinesP)
     private fun detectLines(image: Mat): List<Line> {
 
         val lines = Mat()
@@ -94,25 +98,31 @@ object LaneDetector {
 
     }
 
+    // Fungsi untuk merata-ratakan kemiringan (slope) dan perpotongan (intercept) garis
+    // untuk mengidentifikasi garis jalur kiri dan kanan
     private fun averageSlopeIntercept(size: Size, lines: List<Line>): List<Line>? {
 
         val left = mutableListOf<Pair<Double, Double>>()
         val right = mutableListOf<Pair<Double, Double>>()
         val centerX = size.width / 2
 
+        // Mengelompokkan garis-garis yang terdeteksi menjadi garis kiri atau kanan
         for (line in lines) {
             val x1 = line.start.x
             val y1 = line.start.y
             val x2 = line.end.x
             val y2 = line.end.y
 
-            if (x2 - x1 == 0.0) continue
-            val slope = (y2 - y1) / (x2 - x1)
-            val intercept = y1 - slope * x1
+            if (x2 - x1 == 0.0) continue      // Menghindari pembagian dengan nol
+            val slope = (y2 - y1) / (x2 - x1) // Menghitung kemiringan garis
+            val intercept = y1 - slope * x1   // Menghitung perpotongan garis dengan sumbu y
 
+            // Mengidentifikasi garis kiri: slope negatif dan berada di sisi kiri centerX
             if (slope < -0.5 && x1 < centerX && x2 < centerX) {
                 left.add(slope to intercept)
-            } else if (slope > 0.5 && x1 > centerX && x2 > centerX) {
+            }
+            // Mengidentifikasi garis kanan: slope positif dan berada di sisi kanan centerX
+            else if (slope > 0.5 && x1 > centerX && x2 > centerX) {
                 right.add(slope to intercept)
             }
 
@@ -130,6 +140,7 @@ object LaneDetector {
 
     }
 
+    // Fungsi pembantu untuk merata-ratakan daftar pasangan (slope, intercept)
     private fun averageParams(params: List<Pair<Double, Double>>): Pair<Double, Double> {
 
         val slope = params.map { it.first }.average()
@@ -138,6 +149,7 @@ object LaneDetector {
 
     }
 
+    // Fungsi untuk membuat koordinat titik awal dan akhir sebuah garis dari slope dan intercept
     private fun makeCoordinates(size: Size, params: Pair<Double, Double>): Line {
 
         val (slope, intercept) = params
@@ -149,6 +161,8 @@ object LaneDetector {
 
     }
 
+    // Fungsi untuk melakukan interpolasi linear (Lerp) antara garis-garis lama dan baru
+    // Digunakan untuk menghaluskan pergerakan garis
     private fun lerpLines(oldLines: List<Line>?, newLines: List<Line>, alpha: Double = 0.5): List<Line> {
 
         if (oldLines == null) return newLines
@@ -161,6 +175,7 @@ object LaneDetector {
 
     }
 
+    // Fungsi pembantu untuk melakukan interpolasi linear antara dua titik
     private fun lerpPoint(p1: Point, p2: Point, alpha: Double): Point {
 
         return Point(
